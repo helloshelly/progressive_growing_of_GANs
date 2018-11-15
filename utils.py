@@ -7,18 +7,80 @@ from glob import glob
 import numpy as np
 import math
 import cv2
+import fnmatch
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
+def find(pattern, path):
+    '''Function that takes the pattern and the current directory which is 
+    used as a top level file then returns a list of all the values that 
+    exist based on the pattern
+    
+    Args:
+        pattern (str): The specific pattern for use in aquiring said files (i.e. *.pgm)
+        path (str): The specific directory of where to start the search
+        
+    Returns:
+        list(str): A list that contains all the direct directories for each file that
+                   matches the pattern passed
+    '''
+    
+    result = []
+    for root, dirs, files in os.walk(path):
+        for name in files:
+            if fnmatch.fnmatch(name, pattern):
+                result.append(os.path.join(root, name))
+                
+    return result
+
+def find_file_path(file, path):
+    '''Looks for a specific file in the directory passed
+    
+    Args:
+        file (str): A string containing the file name to look for 
+        path (str): The path where to start the search
+        
+    Returns:
+        str: The specific total path for that file formatted properly
+             for different platforms
+    '''
+    for root, dirs, files in os.walk(path):
+        if file in root:
+            return root
+
+def load_data(pattern='*.pgm', directory=os.getcwd()):
+    '''Function that loads the data from the dataset for *.pgm files
+    and loads those files into a list
+    
+    Args:
+        file (str): The target file to start the search
+        pattern (str): The pattern to look for using wildcards (i.e. *.pgm)
+        directory (str): The direct path to the 'top' of the search using the find function
+        
+    Returns:
+        list: A list of properly formatted directory paths for the files
+    '''
+    if 'data' in os.listdir():
+        data = []
+        files = find(pattern, directory)
+        for f1 in files:
+            img = cv2.imread(f1, flags=0)
+            np_image_data = np.asarray(img)
+            data.append(np_image_data)
+
+    return np.array(data)
 
 class ImageLoader(object):
     def __init__(self, cfg):
         self.cfg = cfg
-        imgs = glob(cfg.data_dir + "/*.jpg") + \
-               glob(cfg.data_dir + "/*.png") + \
-               glob(cfg.data_dir + "/*.jpeg") + \
-               glob(cfg.data_dir + "/*.bmp")
+        #imgs = glob(cfg.data_dir + "/*.jpeg", recursive=True) #+ \
+               #glob(cfg.data_dir + "/*.png", recursive=True) + \
+               #glob(cfg.data_dir + "/*.jpg", recursive=True) + \
+               #glob(cfg.data_dir + "/*.bmp", recursive=True)
 
+   
+        imgs = load_data("*.jpeg", os.path.join(os.getcwd(), 'data', 'images', 'healthy'))
+  
         self.images = np.array(imgs)
         self.train_idx, self.val_idx = None, None
         self.train_test_split()

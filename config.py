@@ -8,9 +8,9 @@ BATCH_SIZE = 64  # batch size for training
 DISPLAY_PERIOD = 5  # Interval to display loss
 SAVE_PERIOD = 1  # Interval to save model
 SAVE_IMAGES = True  # if True, save images when model is saved
-SAVE_DIR = r'D:\Data\pgan\models'  # path to save trained models
-IMAGE_SAVE_DIR = r'D:\Data\pgan\gan_images'  # path to save GAN images
-SUMMARY_DIR = r'D:\Data\pgan\train'
+SAVE_DIR = r'pgan/models'  # path to save trained models
+IMAGE_SAVE_DIR = r'pgan/gan_images'  # path to save GAN images
+SUMMARY_DIR = r'pgan/train'
 
 # Data Preprocessing and augmentation parameters
 INPUT_SHAPE = (512, 512, 3)  # size of random crops used for training
@@ -82,7 +82,7 @@ VALIDATION_SET = {'Normal': ([i for i in range(46, 52)]
                                + [i for i in range(64, 74)])}
 
 # Data directory
-DATA_DIR = r'C:\Data\img'
+DATA_DIR = r'data/images/healthy'
 
 
 #################################################################
